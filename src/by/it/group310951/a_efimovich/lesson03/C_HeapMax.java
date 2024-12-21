@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
@@ -43,22 +44,55 @@ public class C_HeapMax {
         //Будет мало? Ну тогда можете его собрать как Generic и/или использовать в варианте B
         private List<Long> heap = new ArrayList<>();
 
-        int siftDown(int i) { //просеивание вверх
+        int siftDown(int i) {
+            int maxIndex = i;
+            int leftChild = 2 * i + 1;
+            int rightChild = 2 * i + 2;
+
+            if (leftChild < heap.size() && heap.get(leftChild) > heap.get(maxIndex)) {
+                maxIndex = leftChild;
+            }
+
+            if (rightChild < heap.size() && heap.get(rightChild) > heap.get(maxIndex)) {
+                maxIndex = rightChild;
+            }
+
+            if (i != maxIndex) {
+                Collections.swap(heap, i, maxIndex);
+                return siftDown(maxIndex);
+            }
 
             return i;
         }
 
-        int siftUp(int i) { //просеивание вниз
-
+        int siftUp(int i) {
+            while (i > 0) {
+                int parent = (i - 1) / 2;
+                if (heap.get(i) > heap.get(parent)) {
+                    Collections.swap(heap, i, parent);
+                    i = parent;
+                } else {
+                    break;
+                }
+            }
             return i;
         }
 
-        void insert(Long value) { //вставка
+        void insert(Long value) {
+            heap.add(value);
+            siftUp(heap.size() - 1);
         }
 
-        Long extractMax() { //извлечение и удаление максимума
-            Long result = null;
-
+        Long extractMax() {
+            if (heap.isEmpty()) {
+                return null;
+            }
+            Long result = heap.get(0);
+            heap.set(0, heap.get(heap.size() - 1));
+            heap.remove(heap.size() - 1);
+            if (!heap.isEmpty()) {
+                siftDown(0);
+            }
             return result;
         }
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! КОНЕЦ ЗАДАЧИ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
