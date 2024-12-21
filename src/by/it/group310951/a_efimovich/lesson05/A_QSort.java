@@ -3,6 +3,8 @@ package by.it.group310951.a_efimovich.lesson05;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Scanner;
 
 /*
@@ -75,18 +77,42 @@ public class A_QSort {
             //читаем начало и конец каждого отрезка
             segments[i]=new Segment(scanner.nextInt(),scanner.nextInt());
         }
-        //читаем точки
+        PointWithIndex[] pointsWithIndex = new PointWithIndex[m];
         for (int i = 0; i < m; i++) {
-            points[i]=scanner.nextInt();
+            pointsWithIndex[i] = new PointWithIndex(scanner.nextInt(), i);
         }
-        //тут реализуйте логику задачи с применением быстрой сортировки
-        //в классе отрезка Segment реализуйте нужный для этой задачи компаратор
 
+        Arrays.sort(segments);
+        Arrays.sort(pointsWithIndex, Comparator.comparingInt(p -> p.point));
 
+        int j = 0;
+        for (PointWithIndex point : pointsWithIndex) {
+            int count = 0;
 
+            while (j < n && segments[j].stop < point.point) {
+                j++;
+            }
+            int k = j;
+            while (k < n && segments[k].start <= point.point) {
+                if (segments[k].stop >= point.point) {
+                    count++;
+                }
+                k++;
+            }
+            result[point.index] = count;
+        }
 
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
         return result;
+    }
+
+    private static class PointWithIndex {
+        int point;
+        int index;
+
+        PointWithIndex(int point, int index) {
+            this.point = point;
+            this.index = index;
+        }
     }
 
 

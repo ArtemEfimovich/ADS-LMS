@@ -3,6 +3,7 @@ package by.it.group310951.a_efimovich.lesson05;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Scanner;
 
 /*
@@ -53,30 +54,60 @@ public class C_QSortOptimized {
     int[] getAccessory2(InputStream stream) throws FileNotFoundException {
         //подготовка к чтению данных
         Scanner scanner = new Scanner(stream);
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        //число отрезков отсортированного массива
         int n = scanner.nextInt();
-        Segment[] segments=new Segment[n];
-        //число точек
         int m = scanner.nextInt();
-        int[] points=new int[m];
-        int[] result=new int[m];
 
-        //читаем сами отрезки
+        // Массив отрезков
+        Segment[] segments = new Segment[n];
+
+        // Читаем отрезки
         for (int i = 0; i < n; i++) {
-            //читаем начало и конец каждого отрезка
-            segments[i]=new Segment(scanner.nextInt(),scanner.nextInt());
+            segments[i] = new Segment(scanner.nextInt(), scanner.nextInt());
         }
-        //читаем точки
-        for (int i = 0; i < n; i++) {
-            points[i]=scanner.nextInt();
+
+        int[] points = new int[m];
+        for (int i = 0; i < m; i++) {
+            points[i] = scanner.nextInt();
         }
-        //тут реализуйте логику задачи с применением быстрой сортировки
-        //в классе отрезка Segment реализуйте нужный для этой задачи компаратор
 
+        Arrays.sort(segments);
+        int[] result = new int[m];
 
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
+        for (int i = 0; i < m; i++) {
+            result[i] = countSegmentsContainingPoint(segments, points[i]);
+        }
+
         return result;
+    }
+
+    private int countSegmentsContainingPoint(Segment[] segments, int point) {
+        int left = 0, right = segments.length - 1;
+        int index = -1;
+
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (segments[mid].start <= point) {
+                index = mid;
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+
+        if (index == -1) {
+            return 0;
+        }
+
+        int count = 0;
+        for (int i = index; i < segments.length; i++) {
+            if (segments[i].start <= point && segments[i].stop >= point) {
+                count++;
+            } else {
+                break;
+            }
+        }
+
+        return count;
     }
 
 
